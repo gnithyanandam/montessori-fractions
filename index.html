@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montessori Fractions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #2b2d2d;
+            color: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 400;
+            color: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+        
+        .canvas-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        #fractionCanvas {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .controls-section {
+            width: 320px;
+            background: #3a3c3c;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .controls-section {
+                width: 100%;
+            }
+        }
+        
+        .controls-section h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #d0d0d0;
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            background: #2b2d2d;
+            border: 1px solid #555;
+            border-radius: 8px;
+            color: #f5f5f5;
+            font-size: 14px;
+        }
+        
+        input[type="color"] {
+            width: 80px;
+            height: 40px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            background: #2b2d2d;
+            cursor: pointer;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+        }
+        
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .color-row input[type="color"] {
+            flex-shrink: 0;
+        }
+        
+        .color-code {
+            padding: 8px 12px;
+            background: #2b2d2d;
+            border: 1px solid #555;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #f5f5f5;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #32b8c6;
+            color: #134252;
+        }
+        
+        .btn-primary:hover {
+            background: #2da6b2;
+        }
+        
+        .btn-secondary {
+            background: #4a4c4c;
+            color: #f5f5f5;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a5c5c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Symmetrical Fraction Visualizer</h1>
+    </div>
+    
+    <div class="container">
+        <div class="canvas-section">
+            <canvas id="fractionCanvas" width="700" height="500"></canvas>
+        </div>
+        
+        <div class="controls-section">
+            <h2>Fraction Controls</h2>
+            
+            <div class="form-group">
+                <label>Numerator</label>
+                <input type="number" id="numerator" value="1" min="1">
+            </div>
+            
+            <div class="form-group">
+                <label>Denominator</label>
+                <select id="denominator"></select>
+            </div>
+            
+            <div class="form-group">
+                <label>Display Mode</label>
+                <select id="displayMode">
+                    <option value="fraction_only">Show Fraction Only</option>
+                    <option value="whole">Show Whole</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Shape Type</label>
+                <select id="shapeType">
+                    <option value="circle">Circle</option>
+                </select>
+            </div>
+            
+            <h3 style="margin-top: 24px; margin-bottom: 16px; font-size: 16px;">Color Customization</h3>
+            
+            <div class="form-group">
+                <label>Filled Color</label>
+                <div class="color-row">
+                    <input type="color" id="filledColor" value="#218d8d">
+                    <span class="color-code" id="filledColorCode">#218d8d</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Unfilled Color</label>
+                <div class="color-row">
+                    <input type="color" id="unfilledColor" value="#f5f5f5">
+                    <span class="color-code" id="unfilledColorCode">#f5f5f5</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Border Color</label>
+                <div class="color-row">
+                    <input type="color" id="borderColor" value="#ffffff">
+                    <span class="color-code" id="borderColorCode">#ffffff</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Border Width: <span id="borderWidthValue">1</span>px</label>
+                <input type="range" id="borderWidth" min="1" max="10" value="1">
+            </div>
+            
+            <div class="form-group">
+                <label>Border Style</label>
+                <select id="borderStyle">
+                    <option value="solid">Solid</option>
+                    <option value="dashed">Dashed</option>
+                    <option value="dotted">Dotted</option>
+                </select>
+            </div>
+            
+            <button class="btn-primary" id="updateBtn">Update Fraction</button>
+            <button class="btn-secondary" id="resetBtn">Reset to Defaults</button>
+        </div>
+    </div>
+    
+    <script>
+        // Populate denominator dropdown
+        const denominatorSelect = document.getElementById('denominator');
+        for (let i = 1; i <= 20; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === 4) option.selected = true;
+            denominatorSelect.appendChild(option);
+        }
+        
+        // Update color code displays
+        document.getElementById('filledColor').addEventListener('input', (e) => {
+            document.getElementById('filledColorCode').textContent = e.target.value;
+        });
+        document.getElementById('unfilledColor').addEventListener('input', (e) => {
+            document.getElementById('unfilledColorCode').textContent = e.target.value;
+        });
+        document.getElementById('borderColor').addEventListener('input', (e) => {
+            document.getElementById('borderColorCode').textContent = e.target.value;
+        });
+        document.getElementById('borderWidth').addEventListener('input', (e) => {
+            document.getElementById('borderWidthValue').textContent = e.target.value;
+        });
+        
+        function drawFraction() {
+            const canvas = document.getElementById('fractionCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear with white
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Get values
+            const numerator = parseInt(document.getElementById('numerator').value) || 1;
+            const denominator = parseInt(document.getElementById('denominator').value) || 4;
+            const filledColor = document.getElementById('filledColor').value;
+            const unfilledColor = document.getElementById('unfilledColor').value;
+            const borderColor = document.getElementById('borderColor').value;
+            const borderWidth = parseInt(document.getElementById('borderWidth').value);
+            const borderStyle = document.getElementById('borderStyle').value;
+            const displayMode = document.getElementById('displayMode').value;
+            
+            // Calculate circles
+            const wholeCircles = Math.floor(numerator / denominator);
+            const remainder = numerator % denominator;
+            const totalCircles = wholeCircles + (remainder > 0 ? 1 : 0);
+            
+            // Circle sizing
+            const maxRadius = 100;
+            const spacing = 40;
+            const totalWidth = totalCircles * (maxRadius * 2) + (totalCircles - 1) * spacing;
+            const radius = totalWidth > canvas.width - 100 ? (canvas.width - 100 - (totalCircles - 1) * spacing) / (totalCircles * 2) : maxRadius;
+            const actualTotalWidth = totalCircles * (radius * 2) + (totalCircles - 1) * spacing;
+            const startX = (canvas.width - actualTotalWidth) / 2 + radius;
+            const centerY = canvas.height / 2;
+            
+            // Draw whole circles
+            for (let i = 0; i < wholeCircles; i++) {
+                const cx = startX + i * (radius * 2 + spacing);
+                drawCircle(ctx, cx, centerY, radius, denominator, denominator, filledColor, unfilledColor, borderColor, borderWidth, borderStyle, displayMode);
+            }
+            
+            // Draw remainder circle
+            if (remainder > 0) {
+                const cx = startX + wholeCircles * (radius * 2 + spacing);
+                drawCircle(ctx, cx, centerY, radius, denominator, remainder, filledColor, unfilledColor, borderColor, borderWidth, borderStyle, displayMode);
+            }
+        }
+        
+        function drawCircle(ctx, cx, cy, radius, denominator, filled, filledColor, unfilledColor, borderColor, borderWidth, borderStyle, displayMode) {
+            const anglePerSlice = (2 * Math.PI) / denominator;
+            const centerAngle = Math.PI * 1.5; // 270 degrees (bottom)
+            
+            const piecesToDraw = displayMode === 'fraction_only' ? filled : denominator;
+            const totalSpan = piecesToDraw * anglePerSlice;
+            const startAngle = centerAngle - (totalSpan / 2);
+            
+            for (let i = 0; i < piecesToDraw; i++) {
+                const sliceStart = startAngle + (i * anglePerSlice);
+                const sliceEnd = sliceStart + anglePerSlice;
+                
+                // Fill
+                ctx.fillStyle = i < filled ? filledColor : unfilledColor;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, sliceStart, sliceEnd);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Border
+                ctx.strokeStyle = borderColor;
+                ctx.lineWidth = borderWidth;
+                if (borderStyle === 'dashed') {
+                    ctx.setLineDash([5, 5]);
+                } else if (borderStyle === 'dotted') {
+                    ctx.setLineDash([2, 2]);
+                } else {
+                    ctx.setLineDash([]);
+                }
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, radius, sliceStart, sliceEnd);
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('updateBtn').addEventListener('click', drawFraction);
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('numerator').value = 1;
+            document.getElementById('denominator').value = 4;
+            document.getElementById('displayMode').value = 'fraction_only';
+            document.getElementById('filledColor').value = '#218d8d';
+            document.getElementById('unfilledColor').value = '#f5f5f5';
+            document.getElementById('borderColor').value = '#ffffff';
+            document.getElementById('borderWidth').value = 1;
+            document.getElementById('borderStyle').value = 'solid';
+            document.getElementById('filledColorCode').textContent = '#218d8d';
+            document.getElementById('unfilledColorCode').textContent = '#f5f5f5';
+            document.getElementById('borderColorCode').textContent = '#ffffff';
+            document.getElementById('borderWidthValue').textContent = '1';
+            drawFraction();
+        });
+        
+        // Initial draw
+        drawFraction();
+        console.log('App loaded successfully');
+    </script>
+</body>
+</html>
