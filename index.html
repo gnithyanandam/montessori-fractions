@@ -227,7 +227,7 @@
             
             <div class="form-group">
                 <label>Border Width: <span id="borderWidthValue">1</span>px</label>
-                <input type="range" id="borderWidth" min="1" max="10" value="1">
+                <input type="range" id="borderWidth" min="0" max="10" value="1">
             </div>
             
             <div class="form-group">
@@ -335,20 +335,22 @@
                 ctx.fill();
                 
                 // Border
-                ctx.strokeStyle = borderColor;
-                ctx.lineWidth = borderWidth;
-                if (borderStyle === 'dashed') {
-                    ctx.setLineDash([5, 5]);
-                } else if (borderStyle === 'dotted') {
-                    ctx.setLineDash([2, 2]);
-                } else {
-                    ctx.setLineDash([]);
+                if(borderWidth>0){
+                    ctx.strokeStyle = borderColor;
+                    ctx.lineWidth = borderWidth;
+                    if (borderStyle === 'dashed') {
+                        ctx.setLineDash([5, 5]);
+                    } else if (borderStyle === 'dotted') {
+                        ctx.setLineDash([2, 2]);
+                    } else {
+                        ctx.setLineDash([]);
+                    }
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, radius, sliceStart, sliceEnd);
+                    ctx.closePath();
+                    ctx.stroke();
                 }
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, radius, sliceStart, sliceEnd);
-                ctx.closePath();
-                ctx.stroke();
             }
         }
         
